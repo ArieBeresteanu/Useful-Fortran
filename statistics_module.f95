@@ -45,7 +45,7 @@ END FUNCTION mean
 
 
 
-!************ variance ***********************
+!*********** weighted variance *********************
 REAL(dp) FUNCTION var(x,weights,mask) RESULT(var)
 ! this function computes the weighted variance of a vector x
 ! if weights are not given, we assume equal weights.
@@ -134,6 +134,7 @@ norm=(SUM(x**pr))**(ONE/pr)
 
 END FUNCTION norm
 
+!****************** sub-sample *******************************
 SUBROUTINE subsample(original_list,m,with,sub_list)
 ! this subroutine subsamples m elements from the vector original_list and put them in sub_list
 ! if with=.TRUE. we sample with replacement and if with=.FALSE. we sample without replacement
@@ -166,6 +167,8 @@ ENDIF
 
 END SUBROUTINE subsample			
 
+
+!******************** Gini Coefficient ***************************
  FUNCTION realGini(N,list,mask) RETURN(G)
 !
 ! computes the Gini index for a list of reals
@@ -202,5 +205,37 @@ G=numer/(2*N*denom)
 END FUNCTION realGini
 
 
+!******************** Frequency table ******************
+SUBROUTINE freq(N,list,mask,unique,frequency)
+!   Finds the unique elements of a list	of integers (unsorted) 
+!   and returns them in another list (allocatable) as well as
+!	a count of occurrence of each unique value (allocatable)
+    INTEGER, INTENT(IN) 				:: N
+	INTEGER, INTENT(IN)					:: list(N)
+	INTEGER, INTENT(OUT), ALLOCATABLE	:: unique,frequency
+	
+    INTEGER 	:: temp_list(N), temp_count(N)
+    INTEGER 	:: k      ! The number of unique elements
+    INTEGER 	:: i
+
+    k = 1
+    temp_list(1) = list(1)
+    DO i=2,N
+        ! if the number already exist in res check next
+        IF (ANY( temp_list(1:k) .EQ. list(i) )) 
+			! a match was found
+			WHERE (temp_list(1:k) .EQ. list(i)) temp_count=temp_count+1
+		ELSE
+			! No match found so add it to the output
+			k = k + 1
+			temp_list(k) = list(i)
+		END IF
+    END DO
+	
+	ALLOCATE(unique(k),frequency(k))
+	unique=temp_list(1:k)
+	frequency=temp_count(1:k)
+	
+END SUBROUTINE remove_dups
 
 END MODULE statistics
