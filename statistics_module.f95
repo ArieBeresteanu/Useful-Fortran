@@ -236,6 +236,22 @@ SUBROUTINE freq(N,list,mask,unique,frequency)
 	unique=temp_list(1:k)
 	frequency=temp_count(1:k)
 	
-END SUBROUTINE remove_dups
+END SUBROUTINE freq
+
+FUNCTION entropy(N,freq) RETURN(shannon)
+! compute the Shannon information entropy
+! the input is a frequency vector (or probabilities)
+INTEGER, INTENT(IN)		:: N
+REAL(dp), INTENT(IN)	:: freq(N)
+REAL(dp), INTENT(OUT)	:: shannon
+
+REAL(dp)	:: temp(N)
+
+
+temp=freq/SUM(feq)
+temp=temp*LOG(temp)
+
+shannon=-SUM(temp)/LOG(TWO)
+END FUNCTION shannon
 
 END MODULE statistics
