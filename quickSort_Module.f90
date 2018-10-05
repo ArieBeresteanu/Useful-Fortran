@@ -1,6 +1,8 @@
 MODULE quickSort
+
+USE basics
+
 IMPLICIT NONE
-INTEGER, PARAMETER :: dp = kind(1.0d0)
 
 CONTAINS
 
